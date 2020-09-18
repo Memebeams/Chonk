@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "chonk:block/chunk_loader" }
+  }
+}
