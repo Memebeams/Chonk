@@ -80,14 +80,4 @@ public class ChunkLoader extends Block {
             }
         }
     }
-
-    @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return RENDER_SHAPE;
-    }
-
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.INVISIBLE;
-    }
 }

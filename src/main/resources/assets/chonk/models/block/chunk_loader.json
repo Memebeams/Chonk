@@ -1,6 +1,8 @@
 {
-  "parent": "block/cube_all",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "all": "chonk:blocks/chunk_loader"
+    "top": "chonk:block/world_anchor_top",
+    "bottom": "minecraft:block/obsidian",
+    "side": "chonk:block/world_anchor_side"
   }
 }
