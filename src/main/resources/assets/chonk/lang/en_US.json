@@ -1,5 +1,6 @@
 {
   "block.chonk.chunk_loader": "Chunk Loader",
   "block.chonk.ticker": "Ticker",
-  "itemGroup.chonkTab": "Chonk"
+  "itemGroup.chonkTab": "Chonk",
+  "chonk.chunk_loader.toggleHighlight": "Show Loaded Chunks"
 }

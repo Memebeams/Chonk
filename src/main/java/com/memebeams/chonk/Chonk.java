@@ -32,25 +32,15 @@ public class Chonk
     public static final WorldTickHandler worldTickHandler = new WorldTickHandler();
 
     public Chonk() {
-        // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        // Register the doClientStuff method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
-
         RegistryHandler.init();
-        PacketHandler.registerMessages();
-
-        // Register ourselves for server and other game events we are interested in
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(worldTickHandler);
     }
 
     private void setup(final FMLCommonSetupEvent event)
     {
-    }
-
-    private void doClientStuff(final FMLClientSetupEvent event) {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
+        PacketHandler.registerMessages();
     }
 }

@@ -1,6 +1,7 @@
 package com.memebeams.chonk;
 
 import com.memebeams.chonk.network.PacketChunkLoaderSetRadius;
+import com.memebeams.chonk.network.PacketChunkLoaderToggleHighlight;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -23,6 +24,12 @@ public class PacketHandler {
                 .encoder(PacketChunkLoaderSetRadius::toBytes)
                 .decoder(PacketChunkLoaderSetRadius::new)
                 .consumer(PacketChunkLoaderSetRadius::handle)
+                .add();
+
+        INSTANCE.messageBuilder(PacketChunkLoaderToggleHighlight.class, nextID())
+                .encoder(PacketChunkLoaderToggleHighlight::toBytes)
+                .decoder(PacketChunkLoaderToggleHighlight::new)
+                .consumer(PacketChunkLoaderToggleHighlight::handle)
                 .add();
     }
 

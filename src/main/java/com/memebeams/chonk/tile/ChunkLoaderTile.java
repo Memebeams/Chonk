@@ -13,6 +13,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -42,6 +43,7 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
 
     private boolean hasRegistered;
     private boolean isFirstTick = true;
+    private boolean showHighlight = false;
 
     public ChunkLoaderTile() {
         super(RegistryHandler.CHUNK_LOADER_TILE.get());
@@ -65,9 +67,19 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
     }
 
     public void setRadius(int radius) {
-        if (radius <= 0 || radius >= Config.CHUNK_LOADER_MAX_RADIUS.get() || radius == this.radius) { return; }
+        if (radius < 0 || radius > Config.CHUNK_LOADER_MAX_RADIUS.get() || radius == this.radius) { return; }
         this.radius = radius;
         this.refreshChunkTickets();
+        this.markDirty();
+        this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    public boolean showHighlight() {
+        return this.showHighlight;
+    }
+
+    public void toggleHighlight() {
+        this.showHighlight = !this.showHighlight;
         this.markDirty();
         this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
     }
@@ -150,6 +162,7 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
             chunkSet.add(new ChunkPos(((LongNBT) inbt).getLong()));
         }
         this.radius = nbt.getInt("radius");
+        this.showHighlight = nbt.getBoolean("showHighlight");
     }
 
     @Override
@@ -170,6 +183,7 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
         }
         nbt.put("chunkSet", list);
         nbt.putInt("radius", this.radius);
+        nbt.putBoolean("showHighlight", this.showHighlight);
         return nbt;
     }
 
@@ -195,5 +209,13 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
         }
     }
 
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return TileEntity.INFINITE_EXTENT_AABB;
+    }
 
+    @Override
+    public double getMaxRenderDistanceSquared() {
+        return Double.MAX_VALUE;
+    }
 }

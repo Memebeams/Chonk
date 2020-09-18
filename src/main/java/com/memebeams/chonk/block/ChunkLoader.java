@@ -2,10 +2,7 @@ package com.memebeams.chonk.block;
 
 import com.memebeams.chonk.container.ChunkLoaderContainer;
 import com.memebeams.chonk.tile.ChunkLoaderTile;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,6 +14,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -25,6 +24,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ChunkLoader extends Block {
+    private static final VoxelShape RENDER_SHAPE = VoxelShapes.empty();
 
     public ChunkLoader() {
         super(AbstractBlock.Properties
@@ -79,5 +79,15 @@ public class ChunkLoader extends Block {
                 ((ChunkLoaderTile) tile).releaseChunkTickets();
             }
         }
+    }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return RENDER_SHAPE;
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 }
