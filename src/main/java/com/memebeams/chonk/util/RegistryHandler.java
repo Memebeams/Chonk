@@ -2,11 +2,9 @@ package com.memebeams.chonk.util;
 
 import com.memebeams.chonk.Chonk;
 import com.memebeams.chonk.block.BlockItemBase;
-import com.memebeams.chonk.block.ChunkLoader;
-import com.memebeams.chonk.block.Ticker;
+import com.memebeams.chonk.block.ChunkLoaderBlock;
 import com.memebeams.chonk.container.ChunkLoaderContainer;
 import com.memebeams.chonk.tile.ChunkLoaderTile;
-import com.memebeams.chonk.tile.TickerTile;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -32,18 +30,14 @@ public class RegistryHandler {
     }
 
     // Blocks
-    public static final RegistryObject<Block> CHUNK_LOADER = BLOCKS.register("chunk_loader", ChunkLoader::new);
-    public static final RegistryObject<Block> TICKER = BLOCKS.register("ticker", Ticker::new);
+    public static final RegistryObject<Block> CHUNK_LOADER = BLOCKS.register("chunk_loader", ChunkLoaderBlock::new);
 
     // Block Items
     public static final RegistryObject<Item> CHUNK_LOADER_ITEM = ITEMS.register("chunk_loader", () -> new BlockItemBase(CHUNK_LOADER.get()));
-    public static final RegistryObject<Item> TICKER_ITEM = ITEMS.register("ticker", () -> new BlockItemBase(TICKER.get()));
 
     // Tile Entity Types
     public static final RegistryObject<TileEntityType<ChunkLoaderTile>> CHUNK_LOADER_TILE =
             TILES.register("chunk_loader", () -> TileEntityType.Builder.create(ChunkLoaderTile::new, CHUNK_LOADER.get()).build(null));
-    public static final RegistryObject<TileEntityType<TickerTile>> TICKER_TILE =
-            TILES.register("ticker", () -> TileEntityType.Builder.create(TickerTile::new, TICKER.get()).build(null));
 
     // Containers
     public static final RegistryObject<ContainerType<ChunkLoaderContainer>> CHUNK_LOADER_CONTAINER =

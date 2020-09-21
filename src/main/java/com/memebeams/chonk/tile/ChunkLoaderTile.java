@@ -5,6 +5,7 @@ import com.memebeams.chonk.chunkloading.ChunkManager;
 import com.memebeams.chonk.util.RegistryHandler;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -44,6 +45,8 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
     private boolean hasRegistered;
     private boolean isFirstTick = true;
     private boolean showHighlight = false;
+    private UUID owner;
+    private String ownerName;
 
     public ChunkLoaderTile() {
         super(RegistryHandler.CHUNK_LOADER_TILE.get());
@@ -84,6 +87,8 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
         this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
     }
 
+    public String getOwnerName() { return this.ownerName; }
+
     public void releaseChunkTickets() {
         releaseChunkTickets(this.world);
     }
@@ -105,6 +110,8 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
             chunkProvider.releaseTicket(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
             chunkIt.remove();
         }
+
+        manager.deregisterLoader(this.owner, this);
         this.hasRegistered = false;
         this.prevWorld = null;
     }
@@ -122,6 +129,7 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
             chunkSet.add(chunkPos);
         }
 
+        manager.registerLoader(owner, this);
         hasRegistered = true;
     }
 
@@ -136,6 +144,10 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
 //                    // release any tickets we have assigned to us that we loaded with
 //                    releaseChunkTickets(world, tile.getPos());
 //                }
+            }
+
+            if (this.owner == null) {
+                return;
             }
 
             if (hasRegistered && prevWorld != null && (prevPos == null || prevWorld != world || prevPos != this.getPos())) {
@@ -163,6 +175,14 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
         }
         this.radius = nbt.getInt("radius");
         this.showHighlight = nbt.getBoolean("showHighlight");
+
+        if (nbt.contains("owner")) {
+            this.owner = nbt.getUniqueId("owner");
+        }
+
+        if (nbt.contains("ownerName")) {
+            this.ownerName = nbt.getString("ownerName");
+        }
     }
 
     @Override
@@ -184,6 +204,15 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
         nbt.put("chunkSet", list);
         nbt.putInt("radius", this.radius);
         nbt.putBoolean("showHighlight", this.showHighlight);
+
+        if (this.owner != null) {
+            nbt.putUniqueId("owner", this.owner);
+        }
+
+        if (this.ownerName != null) {
+            nbt.putString("ownerName", this.ownerName);
+        }
+
         return nbt;
     }
 
@@ -217,5 +246,12 @@ public class ChunkLoaderTile extends TileEntity implements ITickableTileEntity {
     @Override
     public double getMaxRenderDistanceSquared() {
         return Double.MAX_VALUE;
+    }
+
+    public void setOwner(Entity entity) {
+        this.owner = entity.getUniqueID();
+        this.ownerName = entity.getName().getString();
+        this.markDirty();
+        this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), 3);
     }
 }

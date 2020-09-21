@@ -1,6 +1,9 @@
 package com.memebeams.chonk;
 
+import com.memebeams.chonk.util.PacketHandler;
+import com.memebeams.chonk.util.PlayerEventHandler;
 import com.memebeams.chonk.util.RegistryHandler;
+import com.memebeams.chonk.util.WorldTickHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -9,7 +12,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -30,12 +32,14 @@ public class Chonk
     };
 
     public static final WorldTickHandler worldTickHandler = new WorldTickHandler();
+    public static final PlayerEventHandler playerHandler = new PlayerEventHandler();
 
     public Chonk() {
         RegistryHandler.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(worldTickHandler);
+        MinecraftForge.EVENT_BUS.register(playerHandler);
     }
 
     private void setup(final FMLCommonSetupEvent event)

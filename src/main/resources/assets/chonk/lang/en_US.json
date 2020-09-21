@@ -1,6 +1,6 @@
 {
-  "block.chonk.chunk_loader": "Chunk Loader",
-  "block.chonk.ticker": "Ticker",
-  "itemGroup.chonkTab": "Chonk",
-  "chonk.chunk_loader.toggleHighlight": "Show Loaded Chunks"
+  "block.chonk.chunk_loader": "World Anchor",
+  "chonk.chunk_loader.toggleHighlight": "Show Chunks",
+  "chonk.chunk_loader.owner": "Owner",
+  "chonk.chunk_loader.radius": "Radius"
 }

@@ -2,7 +2,7 @@ package com.memebeams.chonk.client.gui;
 
 import com.memebeams.chonk.Chonk;
 import com.memebeams.chonk.Config;
-import com.memebeams.chonk.PacketHandler;
+import com.memebeams.chonk.util.PacketHandler;
 import com.memebeams.chonk.container.ChunkLoaderContainer;
 import com.memebeams.chonk.network.PacketChunkLoaderSetRadius;
 import com.memebeams.chonk.network.PacketChunkLoaderToggleHighlight;
@@ -42,21 +42,55 @@ public class ChunkLoaderScreen extends ContainerScreen<ChunkLoaderContainer> {
         int relY = (this.height - this.ySize) / 2;
         ChunkLoaderTile tile = this.container.getTile();
 
-        Button decrementButton = new Button(relX + 10, relY + 10, 20, 20, new StringTextComponent("-"), (button) ->
+        this.drawRadiusButtons(matrixStack, tile);
+        this.drawIndicatorButton(relX + 10, relY + this.ySize - 30, this.xSize - 20, tile);
+        this.drawOwner(matrixStack, this.xSize / 2, 10, tile);
+    }
+
+    private void drawRadiusButtons(MatrixStack stack, ChunkLoaderTile tile) {
+        int buttonWidth = 20;
+        int buttonSpacing = 30;
+
+        int left = (this.xSize / 2) - (buttonWidth * 2 + buttonSpacing) / 2;
+        int top = (this.ySize / 2) - 30;
+
+        int buttonsLeft = ((this.width - this.xSize) / 2) + left;
+        int buttonsTop = ((this.height - this.ySize) / 2) + top + 20;
+
+        int labelX = left + buttonWidth + (buttonSpacing / 2);
+        int labelY = top + 8;
+        String labelText = new TranslationTextComponent("chonk.chunk_loader.radius").getString();
+        this.font.drawString(stack, labelText, (float)(labelX - font.getStringWidth(labelText) / 2), (float)labelY, 0);
+
+        Button decrementButton = new Button(buttonsLeft, buttonsTop, buttonWidth, 20, new StringTextComponent("-"), (button) ->
                 PacketHandler.sendToServer(new PacketChunkLoaderSetRadius(tile.getRadius() - 1, tile.getWorld(), tile.getPos())));
         decrementButton.active = tile.getRadius() > 0;
         this.addButton(decrementButton);
 
-        Button incrementButton = new Button(relX + 60, relY + 10, 20, 20, new StringTextComponent("+"), (button) ->
+        Button incrementButton = new Button(buttonsLeft + buttonWidth + buttonSpacing, buttonsTop, buttonWidth, 20, new StringTextComponent("+"), (button) ->
                 PacketHandler.sendToServer(new PacketChunkLoaderSetRadius(tile.getRadius() + 1, tile.getWorld(), tile.getPos())));
         incrementButton.active = tile.getRadius() < Config.CHUNK_LOADER_MAX_RADIUS.get();
         this.addButton(incrementButton);
 
-        Button toggleIndicatorButton = new Button(relX + this.xSize - 70, relY + 10, 110, 20, new TranslationTextComponent("chonk.chunk_loader.toggleHighlight"), (button) ->
+        labelX = left + buttonWidth + (buttonSpacing / 2);
+        labelY = top + 25;
+        labelText = String.valueOf(tile.getRadius());
+        this.font.drawString(stack, labelText, (float)(labelX - font.getStringWidth(labelText) / 2), (float)labelY, 0);
+    }
+
+    private void drawIndicatorButton(int left, int top, int width, ChunkLoaderTile tile) {
+        Button toggleIndicatorButton = new Button(left, top, width, 20, new TranslationTextComponent("chonk.chunk_loader.toggleHighlight"), (button) ->
                 PacketHandler.sendToServer(new PacketChunkLoaderToggleHighlight(tile.getWorld(), tile.getPos())));
         this.addButton(toggleIndicatorButton);
+    }
 
-        this.drawCenteredString(matrixStack, this.font, String.valueOf(tile.getRadius()), 45, 15, 0);
+    private void drawOwner(MatrixStack stack, int left, int top, ChunkLoaderTile tile) {
+        String message = new StringBuilder()
+                .append(new TranslationTextComponent("chonk.chunk_loader.owner").getString())
+                .append(": ")
+                .append(tile.getOwnerName())
+                .toString();
+        this.font.drawString(stack, message, (float)(left - font.getStringWidth(message) / 2), (float)top, 0);
     }
 
     @Override

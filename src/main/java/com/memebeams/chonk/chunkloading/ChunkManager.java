@@ -1,9 +1,16 @@
 package com.memebeams.chonk.chunkloading;
 
 import com.memebeams.chonk.tile.ChunkLoaderTile;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraft.world.storage.WorldSavedData;
@@ -11,7 +18,7 @@ import net.minecraftforge.common.util.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Saved data for managing loaded chunks.
@@ -30,9 +37,14 @@ public class ChunkManager extends WorldSavedData {
     private static final TicketType<ChunkPos> INITIAL_LOAD_TICKET_TYPE = TicketType.create("chonk:initial_chunkload", Comparator.comparingLong(ChunkPos::asLong), 10);
 
     private ChunkMultimap chunks = new ChunkMultimap();
+    private Map<UUID, List<ChunkLoaderTile>> owners = new HashMap<>();
 
     private ChunkManager() {
         super(SAVEDATA_KEY);
+    }
+
+    public int getTileCount(UUID owner) {
+        return owners.containsKey(owner) ? owners.get(owner).size() : 0;
     }
 
     @Override
@@ -75,10 +87,57 @@ public class ChunkManager extends WorldSavedData {
             //If we have any chunks loaded we need to reset the update entity tick
             // This is similar to what vanilla does for when it has force loaded chunks
             world.resetUpdateEntityTick();
+
+            instance.chunks.forEach((chunkPosLong, blockPosSet) -> {
+                ChunkPos chunkPos = new ChunkPos(chunkPosLong);
+                tickChunk(world, chunkPos);
+            });
+        }
+    }
+
+    private static void tickChunk(ServerWorld world, ChunkPos chunkPos) {
+        int xStart = chunkPos.getXStart();
+        int zStart = chunkPos.getZStart();
+
+        for (ChunkSection chunksection : world.getChunk(chunkPos.x, chunkPos.z).getSections()) {
+            if (chunksection != Chunk.EMPTY_SECTION && chunksection.needsRandomTickAny()) {
+                int yStart = chunksection.getYLocation();
+
+                for (int i = 0; i < world.getGameRules().getInt(GameRules.RANDOM_TICK_SPEED); i++) {
+                    BlockPos blockPos = world.getBlockRandomPos(xStart, yStart, zStart, 15);
+                    BlockState blockState = chunksection.getBlockState(blockPos.getX() - xStart, blockPos.getY() - yStart, blockPos.getZ() - zStart);
+
+                    if (blockState.ticksRandomly()) {
+                        blockState.randomTick(world, blockPos, world.rand);
+                    }
+
+                    FluidState fluidState = blockState.getFluidState();
+
+                    if (fluidState.ticksRandomly()) {
+                        fluidState.randomTick(world, blockPos, world.rand);
+                    }
+                }
+            }
         }
     }
 
     public static ChunkManager getInstance(ServerWorld world) {
         return world.getSavedData().getOrCreate(ChunkManager::new, SAVEDATA_KEY);
+    }
+
+    public void registerLoader(UUID owner, ChunkLoaderTile tile) {
+        if (!this.owners.containsKey(owner)) {
+            this.owners.put(owner, new LinkedList<>(Arrays.asList(tile)));
+        } else {
+            this.owners.get(owner).add(tile);
+        }
+    }
+
+    public void deregisterLoader(UUID owner, ChunkLoaderTile tile) {
+        if (this.owners.get(owner) != null && this.owners.get(owner).contains(tile)) {
+            this.owners.get(owner).remove(tile);
+        } else {
+            LOGGER.error("Tried to deregister a loader that wasn't in the map! Owner: {}, Tile at: {}", owner, tile.getPos());
+        }
     }
 }

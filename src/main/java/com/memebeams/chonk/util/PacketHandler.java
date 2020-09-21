@@ -1,5 +1,6 @@
-package com.memebeams.chonk;
+package com.memebeams.chonk.util;
 
+import com.memebeams.chonk.Chonk;
 import com.memebeams.chonk.network.PacketChunkLoaderSetRadius;
 import com.memebeams.chonk.network.PacketChunkLoaderToggleHighlight;
 import net.minecraft.util.ResourceLocation;

@@ -23,10 +23,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ChunkLoader extends Block {
-    private static final VoxelShape RENDER_SHAPE = VoxelShapes.empty();
-
-    public ChunkLoader() {
+public class ChunkLoaderBlock extends Block {
+    public ChunkLoaderBlock() {
         super(AbstractBlock.Properties
                 .create(Material.ROCK)
                 .hardnessAndResistance(5.0f, 6.0f)

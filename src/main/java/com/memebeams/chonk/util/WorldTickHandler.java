@@ -1,4 +1,4 @@
-package com.memebeams.chonk;
+package com.memebeams.chonk.util;
 
 import com.memebeams.chonk.chunkloading.ChunkManager;
 import net.minecraft.world.server.ServerWorld;
