@@ -4,10 +4,6 @@ import com.memebeams.chonk.util.PacketHandler;
 import com.memebeams.chonk.util.PlayerEventHandler;
 import com.memebeams.chonk.util.RegistryHandler;
 import com.memebeams.chonk.util.WorldTickHandler;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -24,12 +20,6 @@ public class Chonk
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "chonk";
-    public static final ItemGroup TAB = new ItemGroup(1, "chonkTab") {
-        @OnlyIn(Dist.CLIENT)
-        public ItemStack createIcon() {
-            return new ItemStack(RegistryHandler.CHUNK_LOADER_ITEM.get());
-        }
-    };
 
     public static final WorldTickHandler worldTickHandler = new WorldTickHandler();
     public static final PlayerEventHandler playerHandler = new PlayerEventHandler();

@@ -48,8 +48,8 @@ public class ChunkLoaderTileRenderer extends TileEntityRenderer<ChunkLoaderTile>
         matrixStack.push();
 
         BlockPos pos = tile.getPos();
-        float xOffset = 8f - pos.getX() % 16;
-        float zOffset = 8f - pos.getZ() % 16;
+        float xOffset = 8f - Math.abs(pos.getX() % 16);
+        float zOffset = 8f - Math.abs(pos.getZ() % 16);
         float height = pos.getY();
         float scale = tile.getRadius();
         matrixStack.scale(1.0f, 1.0f, 1.0f);
@@ -70,6 +70,11 @@ public class ChunkLoaderTileRenderer extends TileEntityRenderer<ChunkLoaderTile>
         matrixStack.translate(xOffset, 0f, zOffset);
         matrixStack.rotate(rotation);
         matrixStack.translate(0f, 0f, 8f + 16f * scale);
+
+        // Pos, Pos = Good
+        // Pos, Neg = Off by 1 chunk in the pos z direction
+        // Neg, Pos = Off by 1 chunk in the pos x direction
+        // Neg, neg = Off by 1 chunk in both directions
 
         add(builder, matrixStack, -8f - 16f * scale, -height, 0f, sprite.getMinU(), sprite.getMinV());
         add(builder, matrixStack, 8f + 16f * scale, -height, 0f, sprite.getMaxU(), sprite.getMinV());

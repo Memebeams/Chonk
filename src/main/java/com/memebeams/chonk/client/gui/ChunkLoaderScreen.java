@@ -2,11 +2,11 @@ package com.memebeams.chonk.client.gui;
 
 import com.memebeams.chonk.Chonk;
 import com.memebeams.chonk.Config;
-import com.memebeams.chonk.util.PacketHandler;
 import com.memebeams.chonk.container.ChunkLoaderContainer;
 import com.memebeams.chonk.network.PacketChunkLoaderSetRadius;
 import com.memebeams.chonk.network.PacketChunkLoaderToggleHighlight;
 import com.memebeams.chonk.tile.ChunkLoaderTile;
+import com.memebeams.chonk.util.PacketHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;

@@ -9,7 +9,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
-import org.jline.utils.Log;
 
 import java.util.function.Supplier;
 

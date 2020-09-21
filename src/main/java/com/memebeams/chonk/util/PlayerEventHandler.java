@@ -1,6 +1,5 @@
 package com.memebeams.chonk.util;
 
-import com.memebeams.chonk.Chonk;
 import com.memebeams.chonk.Config;
 import com.memebeams.chonk.chunkloading.ChunkManager;
 import com.memebeams.chonk.tile.ChunkLoaderTile;
@@ -8,12 +7,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 public class PlayerEventHandler {
     @SubscribeEvent
