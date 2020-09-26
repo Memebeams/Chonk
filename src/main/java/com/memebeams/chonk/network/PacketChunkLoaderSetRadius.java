@@ -19,7 +19,7 @@ public class PacketChunkLoaderSetRadius {
 
     public PacketChunkLoaderSetRadius(PacketBuffer buf) {
         this.radius = buf.readInt();
-        this.dimension = RegistryKey.func_240903_a_(Registry.WORLD_KEY, buf.readResourceLocation());
+        this.dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, buf.readResourceLocation());
         this.pos = buf.readBlockPos();
     }
 
@@ -31,7 +31,7 @@ public class PacketChunkLoaderSetRadius {
 
     public void toBytes(PacketBuffer buf) {
         buf.writeInt(radius);
-        buf.writeResourceLocation(this.dimension.func_240901_a_());
+        buf.writeResourceLocation(this.dimension.getLocation());
         buf.writeBlockPos(pos);
     }
 
